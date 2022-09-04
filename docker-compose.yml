@@ -1,0 +1,30 @@
+version: "2"
+
+services:
+  mysqlsrv:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "letmein"
+      MYSQL_DATABASE: "yalla"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - mysql-compose-network
+  app:
+    image: ${IMAGE_NAME}
+    container_name: ${IMAGE_NAME}
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - ${PORT_NUMBER}:80
+    volumes:
+      - .:/var/www/html/
+    networks:
+      - mysql-compose-network
+networks: 
+  mysql-compose-network:
+    driver: bridge
